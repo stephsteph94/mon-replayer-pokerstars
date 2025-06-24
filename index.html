@@ -240,8 +240,8 @@
           buttonSeat = line.split(' ')[1].replace('#','');
         }
 
-        if (line.includes('posts small blind')) smallBlindPlayer = line.split(':')[0];
-        if (line.includes('posts big blind')) bigBlindPlayer = line.split(':')[0];
+        if (line.includes('posts small blind')) smallBlindPlayer = line.split(':')[0].trim();
+        if (line.includes('posts big blind')) bigBlindPlayer = line.split(':')[0].trim();
 
         if (line.includes('Dealt to')) {
           hero = line.split(' ')[2];
@@ -283,18 +283,23 @@
         let y = 250 * Math.sin(rad);
         c.style.left = `calc(50% + ${x}px)`;
         c.style.top = `calc(50% + ${y}px)`;
+
         let b = document.createElement('span');
         b.innerText = p.name.split(' ')[0];
         b.className = 'player-badge';
         b.style.background = p.color;
         b.id = `player-${i}`;
+
         let role = document.createElement('span');
         role.className = 'role-badge';
         let rt = '';
+
         if (p.seat.includes(buttonSeat)) rt = 'BTN';
-        else if (p.name.startsWith(small)) rt = 'SB';
-        else if (p.name.startsWith(big)) rt = 'BB';
+        else if (p.name === small) rt = 'SB';
+        else if (p.name === big) rt = 'BB';
+
         role.innerText = rt;
+
         let hand = document.createElement('div');
         hand.className = 'player-hand';
         hand.id = `player-hand-${i}`;
@@ -307,6 +312,7 @@
             hand.appendChild(img);
           });
         }
+
         c.appendChild(b);
         if (rt) c.appendChild(role);
         c.appendChild(hand);
@@ -318,7 +324,6 @@
     function showStep() {
       if (steps.length === 0) return;
 
-      // Reset folded players on backward step
       foldedPlayers = [];
       for (let i = 0; i <= currentStep; i++) {
         let act = steps[i].action;
